@@ -122,6 +122,7 @@ class UserProvider extends ChangeNotifier {
 
       if (kDebugMode) log("OTP Verify Response: ${response.data}");
       log("message");
+      log("message");
 
       if (response.statusCode == 200) {
         _message = response.data["message"];
