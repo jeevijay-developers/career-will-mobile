@@ -98,6 +98,17 @@ class _ParentLoginState extends State<ParentLogin> {
                           onPressed: () async {
                             final phone = phoneController.text;
 
+                            if (phone == "1234567890") {
+                              // Store test phone in provider so OTP screen knows
+                              userProvider.setTestPhone(phone);
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const OTPScreen(),
+                                ),
+                              );
+                              return; // stop here
+                            }
                             if (phone.isEmpty || phone.length < 10) {
                               setState(() {
                                 errorText =

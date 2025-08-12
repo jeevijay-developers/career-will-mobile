@@ -158,4 +158,23 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
     return false;
   }
+
+  // For test phone shortcut
+  void setTestPhone(String phone) {
+    _tempPhone = phone;
+  }
+
+  // Fake login for test case
+  Future<void> fakeTestLogin() async {
+    final user = User(
+      id: "test-id",
+      email: "test@example.com",
+      role: "parent",
+      token: "test-token",
+      username: "John Doe",
+      phone: _tempPhone!,
+      students: [], // No students in test
+    );
+    await saveLoginInfo(user);
+  }
 }

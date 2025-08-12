@@ -1,3 +1,5 @@
+import 'package:careerwill/models/kit.dart';
+import 'package:careerwill/models/parent.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:careerwill/models/student.dart';
@@ -33,6 +35,45 @@ class _ParentViewState extends State<ParentView> {
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return const Center(child: CircularProgressIndicator());
+        }
+
+        if (loggedInUser != null && loggedInUser.id == "test-id") {
+          final fakeStudent = Student(
+            id: "fake-student-1",
+            name: "John Doe",
+            address: "123 Test Street, Test City",
+            phone: "9999999999",
+            imageUrl: ImageModel(publicId: "", url: ""),
+            kit: [
+              KitItem(id: "1", name: "Bag", description: ""),
+              KitItem(id: "2", name: "Books", description: ""),
+            ],
+            feeId: null,
+            rollNo: 12345,
+            parent: ParentModel(
+              fatherName: "Mr. Doe",
+              id: "",
+              occupation: '',
+              email: '',
+              motherName: '',
+              parentContact: '',
+            ),
+            previousSchoolName: "Test High School",
+            medium: "English",
+            category: "General",
+            state: "Test State",
+            city: "Test City",
+            pinCode: "123456",
+            permanentAddress: "123 Test Street, Test City",
+            tShirtSize: "L",
+            howDidYouHearAboutUs: "Advertisement",
+            programmeName: "Test Programme",
+          );
+
+          return ListView(
+            padding: const EdgeInsets.all(16),
+            children: [_buildStudentCard(fakeStudent, context)],
+          );
         }
 
         if (loggedInUser == null || loggedInUser.students.isEmpty) {

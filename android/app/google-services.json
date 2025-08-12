@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "641198733077",
+    "project_id": "cwneet-kota",
+    "storage_bucket": "cwneet-kota.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:641198733077:android:46191082e04e7c0487db1c",
+        "android_client_info": {
+          "package_name": "com.app.cwneetkota"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEn3mbprg8HgrCR7N99tOJroITDp0HRCk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
