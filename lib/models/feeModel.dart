@@ -6,7 +6,7 @@ class FeeModel {
   final int paidAmount;
   final int pendingAmount;
   final String status;
-  final String approvedBy;
+  final String? approvedBy;
   final List<SubmissionModel> submissions;
 
   FeeModel({
@@ -41,7 +41,7 @@ class FeeModel {
 class SubmissionModel {
   final int amount;
   final String mode;
-  final DateTime dateOfReceipt;
+  final DateTime? dateOfReceipt;
 
   SubmissionModel({
     required this.amount,
@@ -49,11 +49,15 @@ class SubmissionModel {
     required this.dateOfReceipt,
   });
 
-  factory SubmissionModel.fromJson(Map<String, dynamic> json) {
+ 
+    factory SubmissionModel.fromJson(Map<String, dynamic> json) {
     return SubmissionModel(
       amount: json['amount'],
       mode: json['mode'],
-      dateOfReceipt: DateTime.parse(json['dateOfReceipt']),
+      dateOfReceipt: json['dateOfReceipt'] != null
+          ? DateTime.parse(json['dateOfReceipt'])
+          : null,
     );
   }
-}
+  }
+

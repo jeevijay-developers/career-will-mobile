@@ -77,7 +77,7 @@ class _ParentLoginState extends State<OTPScreen> {
                           onPressed: () async {
                             final otp = otpController.text.trim();
 
-                            if (userProvider.tempPhone == "1234567890" &&
+                            if (userProvider.tempPhone == "9211558168" &&
                                 otp == "111111") {
                               // Fake login save
                               await userProvider.fakeTestLogin();

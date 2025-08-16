@@ -52,7 +52,7 @@ class FeeScreen extends StatelessWidget {
                   "₹${fee.pendingAmount}",
                   valueColor: fee.pendingAmount > 0 ? Colors.red : Colors.green,
                 ),
-                _detailRow("Approved By", fee.approvedBy),
+                _detailRow("Approved By", fee.approvedBy ?? ""),
                 _detailRow("Status", fee.status),
               ],
             ),
@@ -89,9 +89,11 @@ class FeeScreen extends StatelessWidget {
                       _detailRow("Mode", submission.mode),
                       _detailRow(
                         "Date",
-                        DateFormat(
-                          'dd MMM yyyy',
-                        ).format(submission.dateOfReceipt),
+                        submission.dateOfReceipt != null
+                            ? DateFormat(
+                                'dd MMM yyyy',
+                              ).format(submission.dateOfReceipt!)
+                            : "No date available",
                       ),
                     ],
                   ),

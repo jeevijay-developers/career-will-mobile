@@ -121,27 +121,33 @@ class UserProvider extends ChangeNotifier {
       );
 
       if (kDebugMode) log("OTP Verify Response: ${response.data}");
-      log("message");
-      log("message");
 
       if (response.statusCode == 200) {
         _message = response.data["message"];
 
         final students = response.data['data'];
         if (students is List && students.isNotEmpty) {
-          final firstStudent = students[0];
+          // ✅ collect all student IDs
+          final studentIds = students.map((e) => e["_id"].toString()).toList();
+
+          // ✅ pick parent details from first student
+          final parentName = students[0]['parent']?['fatherName'] ?? "Parent";
 
           final user = User.fromJson({
-            "_id": firstStudent["_id"] ?? "",
-            "email": firstStudent["email"] ?? "",
+            "_id":
+                response.data["_id"] ??
+                "", // parent id if API sends, else empty
+            "email": "", // parent login is by phone, so keep empty
             "role": "parent",
             "token": response.data["token"] ?? "",
-            "username": firstStudent['parent']?['fatherName'] ?? "",
+            "username": parentName,
             "phone": _tempPhone,
-            "students": students.map((e) => e["_id"].toString()).toList(),
+            "students": studentIds, // ✅ all student IDs linked
           });
 
           await saveLoginInfo(user);
+          log("✅ Saved user: ${user.toJson()}");
+
           _isLoading = false;
           return true;
         } else {

@@ -40,6 +40,11 @@ class User {
         [],
   );
 
+  @override
+  String toString() {
+    return 'User(id: $id, email:$email, username:$username, role:$role, token: $token, student: $students)';
+  }
+
   Map<String, dynamic> toJson() => {
     "_id": id,
     "email": email,

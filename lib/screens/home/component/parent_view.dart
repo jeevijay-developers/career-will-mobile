@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:careerwill/models/kit.dart';
 import 'package:careerwill/models/parent.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +38,7 @@ class _ParentViewState extends State<ParentView> {
         if (snapshot.connectionState != ConnectionState.done) {
           return const Center(child: CircularProgressIndicator());
         }
+        log("logged in user ---> $loggedInUser");
 
         if (loggedInUser != null && loggedInUser.id == "test-id") {
           final fakeStudent = Student(

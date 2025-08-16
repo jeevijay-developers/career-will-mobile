@@ -98,7 +98,7 @@ class _ParentLoginState extends State<ParentLogin> {
                           onPressed: () async {
                             final phone = phoneController.text;
 
-                            if (phone == "1234567890") {
+                            if (phone == "9211558168") {
                               // Store test phone in provider so OTP screen knows
                               userProvider.setTestPhone(phone);
                               Navigator.pushReplacement(

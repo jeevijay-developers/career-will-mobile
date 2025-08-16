@@ -41,6 +41,7 @@ dependencies:
   pin_code_fields: ^8.0.1
   intl: ^0.20.2
   table_calendar: ^3.2.0
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +69,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/logo.png
+    - assets/images/CWLOGO.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -95,3 +97,10 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/Logo1.png"
+    
+
