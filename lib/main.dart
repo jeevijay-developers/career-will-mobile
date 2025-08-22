@@ -1,12 +1,19 @@
+import 'dart:developer';
+
 import 'package:careerwill/provider/attendance_provider.dart';
-import 'package:careerwill/screens/auth/login/teacher_login.dart';
 import 'package:careerwill/provider/user_provider.dart';
 import 'package:careerwill/provider/home_provider.dart';
+import 'package:careerwill/screens/auth/login/parent_login.dart';
 import 'package:careerwill/screens/fee/provider/fee_provider.dart';
+import 'package:careerwill/screens/home/home.dart';
+import 'package:careerwill/utitlity/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+   await GetStorage.init();
   runApp(
     MultiProvider(
       providers: [
@@ -25,10 +32,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final box = GetStorage();
+    final userJson = box.read(USER_INFO_BOX);
+    log("logged in user ---> $userJson");
+
     return MaterialApp(
       title: 'Career Will',
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      home: userJson != null ? HomeScreen() : ParentLogin(),
     );
   }
 }

@@ -29,23 +29,23 @@ class _ResultSearchScreenState extends State<ResultSearchScreen> {
   }
 
   void _onSearchChanged(String query) {
-  if (_debounce?.isActive ?? false) _debounce!.cancel();
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
 
-  _debounce = Timer(const Duration(milliseconds: 500), () {
-    setState(() {
-      selectedStudentName = query;
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      setState(() {
+        selectedStudentName = query;
+      });
+
+      final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+
+      if (query.trim().isEmpty) {
+        homeProvider
+            .clearSearchResult(); // 👈 Make sure this exists in HomeProvider
+      } else {
+        homeProvider.searchResult(query);
+      }
     });
-
-    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
-
-    if (query.trim().isEmpty) {
-      homeProvider.clearSearchResult(); // 👈 Create and call this function
-    } else {
-      homeProvider.searchResult(query);
-    }
-  });
-}
-
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,8 +61,14 @@ class _ResultSearchScreenState extends State<ResultSearchScreen> {
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      appBar: buildHomeAppBar(loggedInUser.username),
-      drawer: buildHomeDrawer(context, loggedInUser, userProvider),
+      appBar: buildHomeAppBar(
+        context,
+        loggedInUser.username,
+        isParent ? userProvider : null, // 👈 Pass userProvider only for parent
+      ),
+      drawer: isTeacher
+          ? buildHomeDrawer(context, loggedInUser, userProvider)
+          : null, // 👈 Parent won’t see drawer
       body: isTeacher
           ? TeacherViewResult(
               searchController: searchController,

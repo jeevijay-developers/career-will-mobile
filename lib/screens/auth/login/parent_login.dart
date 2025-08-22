@@ -58,7 +58,7 @@ class _ParentLoginState extends State<ParentLogin> {
                   const SizedBox(height: 20),
 
                   const Text(
-                    "Welcome to Career Will",
+                    "Welcome to CW NEET Offline",
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,

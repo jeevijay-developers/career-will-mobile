@@ -2,7 +2,9 @@ import 'package:careerwill/provider/home_provider.dart';
 import 'package:careerwill/screens/attendance/attendance_screen.dart';
 import 'package:careerwill/screens/fee/fee_screen.dart' hide Student;
 import 'package:careerwill/screens/fee/provider/fee_provider.dart';
+import 'package:careerwill/screens/result/components/result_card.dart';
 import 'package:careerwill/screens/result/components/result_details.dart';
+import 'package:careerwill/screens/result/components/student_result_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:careerwill/models/student.dart';
 import 'package:provider/provider.dart';
@@ -19,7 +21,10 @@ class StudentDetailScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: Text(student.name, style: theme.textTheme.titleLarge),
+        title: Text(
+          student.name.toUpperCase(),
+          style: theme.textTheme.titleLarge,
+        ),
         backgroundColor: Colors.white,
         elevation: 0.5,
         foregroundColor: Colors.black,
@@ -75,7 +80,7 @@ class StudentDetailScreen extends StatelessWidget {
                     _divider(),
                     _buildInfoRow("Phone", student.phone),
                     _divider(),
-                    _buildInfoRow("Address", student.address),
+                    _buildInfoRow("City", "${student.city}, ${student.state}"),
                   ],
                 ),
 
@@ -138,14 +143,27 @@ class StudentDetailScreen extends StatelessWidget {
                       return;
                     }
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => StudentResultDetailScreen(
-                          result: provider.filteredResults.first,
+                    if (provider.filteredResults.length == 1) {
+                      // Only one result → open directly
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => StudentResultDetailScreen(
+                            result: provider.filteredResults.first,
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    } else {
+                      // Multiple results → show list
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => StudentResultScreen(
+                            results: provider.filteredResults,
+                          ),
+                        ),
+                      );
+                    }
                   },
                 ),
 
@@ -173,7 +191,7 @@ class StudentDetailScreen extends StatelessWidget {
                       listen: false,
                     );
 
-                    await feeProvider.fetchFeeByRollNumber(student.rollNo);
+                    await feeProvider.fetchFeeByRollNo(student.rollNo);
 
                     if (feeProvider.fee != null) {
                       Navigator.push(
@@ -216,7 +234,7 @@ class StudentDetailScreen extends StatelessWidget {
             "$title: ",
             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
           ),
-          Expanded(child: Text(value, style: const TextStyle(fontSize: 15))),
+          Expanded(child: Text((value), style: const TextStyle(fontSize: 15))),
         ],
       ),
     );

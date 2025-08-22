@@ -14,38 +14,50 @@ class FeeProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
-  Future<void> fetchFeeByRollNumber(int rollNumber) async {
+  Future<void> fetchFeeByRollNo(int rollNo) async {
+    log("🔍 fetchFeeByRollNo called with: $rollNo");
+
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
       final response = await _dio.getItems(
-        endpointUrl: "/fee/get-fee-by-roll-number/$rollNumber",
+        endpointUrl: "/fee/get-fee-by-roll-number/$rollNo",
       );
 
-      log("📦 Fee response: ${response.data}");
+      log("📡 Status Code: ${response.statusCode}");
+      log("📡 Response Data: ${response.data}");
 
       if (response.statusCode == 200 && response.data != null) {
-        final List<dynamic> feeList = response.data;
+        final data = response.data as Map<String, dynamic>;
+        final List<dynamic> feeList = data['fees'] ?? [];
 
         if (feeList.isNotEmpty) {
-          _fee = FeeModel.fromJson(feeList[0]); // ✅ Correct usage
+          _fee = FeeModel.fromJson(feeList[0]);
+          log("✅ Fee parsed for rollNo $rollNo");
         } else {
           _fee = null;
           _errorMessage = "No fee records found for this roll number.";
+          log("⚠️ No fee records found for rollNo $rollNo");
         }
       } else {
         _fee = null;
         _errorMessage = "Fee data not found.";
+        log("❌ Fee data not found for rollNo $rollNo");
       }
     } catch (e) {
-      log("❌ Fee fetch error: $e");
       _fee = null;
       _errorMessage = e.toString();
+      log("💥 Error fetching fee: $e");
     }
 
     _isLoading = false;
+    notifyListeners();
+  }
+
+  void clearFee() {
+    _fee = null;
     notifyListeners();
   }
 }

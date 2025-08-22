@@ -128,6 +128,50 @@ class _ParentLoginState extends State<OTPScreen> {
                             }
                           },
                         ),
+                  TextButton(
+                    onPressed: () async {
+                      if (userProvider.tempPhone == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "Phone number missing. Please login again.",
+                            ),
+                          ),
+                        );
+                        return;
+                      }
+
+                      setState(() => isLoading = true);
+
+                      final success = await userProvider.parentLogin(
+                        mobileNumber: int.parse(
+                          userProvider.tempPhone!,
+                        ), 
+                      );
+
+                      setState(() => isLoading = false);
+
+                      if (success) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("OTP resent successfully"),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              userProvider.message ?? "Failed to resend OTP",
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    child: const Text(
+                      "Resend OTP",
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ),
 
                   Center(
                     child: TextButton(

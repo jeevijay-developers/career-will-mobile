@@ -71,8 +71,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      appBar: buildHomeAppBar(loggedInUser.username),
-      drawer: buildHomeDrawer(context, loggedInUser, userProvider),
+      appBar: buildHomeAppBar(
+        context,
+        loggedInUser.username,
+        isParent ? userProvider : null,
+        isParent,
+      ),
+      drawer: isTeacher
+          ? buildHomeDrawer(context, loggedInUser, userProvider)
+          : null, // 👈 hide drawer for parent
       body: isTeacher
           ? TeacherView(
               searchController: searchController,

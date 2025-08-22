@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:careerwill/models/results.dart';
 import 'package:careerwill/models/student.dart';
 import 'package:careerwill/service/dio_service.dart';
@@ -14,6 +13,8 @@ class HomeProvider extends ChangeNotifier {
   List<Result> filteredResults = [];
   bool _isLoading = false;
   String? _errorMessage;
+  List<Student> _parentStudents = [];
+  List<Student> get parentStudents => _parentStudents;
 
   List<Student> get filteredStudents => _filteredStudents;
   List<Student> get allStudents => _allStudents;
@@ -39,7 +40,7 @@ class HomeProvider extends ChangeNotifier {
         for (var json in jsonList) {
           try {
             _allStudents.add(Student.fromJson(json));
-            log("We are here");
+            log("✅ Student parsed: ${json['_id']}");
           } catch (e) {
             log("❌ Failed to parse student: $e\nData: $json");
           }
@@ -77,7 +78,6 @@ class HomeProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         final List data = response.data;
-
         _filteredStudents = data.map((json) => Student.fromJson(json)).toList();
       } else {
         _filteredStudents = [];
@@ -118,7 +118,7 @@ class HomeProvider extends ChangeNotifier {
         log("Raw List Length: ${data.length}");
 
         filteredResults = data.map((json) {
-          log("Parsing result: ${json['student']}"); // Add this log
+          log("Parsing result: ${json['student']}");
           return Result.fromJson(json);
         }).toList();
 
@@ -138,33 +138,43 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<Student>> fetchStudentsByIds(List<String> ids) async {
+  Future<Student?> fetchStudentById(String id) async {
+    log("🔍 fetchStudentById called with ID: $id");
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
       final response = await _dio.getItems(
-        endpointUrl: "/student/get-student-by-id",
-        queryParameters: {'ids': ids.join(',')},
+        endpointUrl: "/student/get-student-by-id/$id",
       );
 
-      if (response.statusCode == 200) {
-        final List jsonList = response.data['students'];
-        _allStudents = jsonList.map((json) => Student.fromJson(json)).toList();
-        _filteredStudents = _allStudents;
-        return _allStudents;
+      log("📡 Status: ${response.statusCode}");
+      log("📡 Data: ${response.data}");
+
+      if (response.statusCode == 200 && response.data != null) {
+        final student = Student.fromJson(response.data);
+        log("✅ Student parsed: ${student.id}");
+
+        // 👉 Add to parent-specific list without replacing entire DB
+        if (!_parentStudents.any((s) => s.id == student.id)) {
+          _parentStudents.add(student);
+        }
+
+        _isLoading = false;
+        notifyListeners();
+        return student;
       } else {
-        _errorMessage = "Failed to load students for parent.";
+        _errorMessage = "Failed to fetch student with id $id.";
       }
-    } catch (e) {
+    } catch (e, st) {
+      log("❌ Error fetching student: $e\n$st");
       _errorMessage = e.toString();
     }
 
     _isLoading = false;
     notifyListeners();
-
-    return [];
+    return null;
   }
 
   void clearSearchResult() {

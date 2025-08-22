@@ -40,7 +40,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         backgroundColor: const Color(0xFFF8F9FB),
         appBar: AppBar(
           title: Text(
-            "${widget.student.name}'s Attendance",
+            "${widget.student.name.toUpperCase()}'s Attendance",
             style: const TextStyle(fontWeight: FontWeight.w600),
           ),
           backgroundColor: Colors.white,

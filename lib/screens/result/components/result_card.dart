@@ -9,11 +9,24 @@ class StudentResultList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Sort results by date (newest first)
+    final sortedResults = [...results];
+    sortedResults.sort((a, b) {
+      final dateA = a.date != null ? DateTime.tryParse(a.date!) : null;
+      final dateB = b.date != null ? DateTime.tryParse(b.date!) : null;
+
+      if (dateA == null && dateB == null) return 0;
+      if (dateA == null) return 1;
+      if (dateB == null) return -1;
+
+      return dateB.compareTo(dateA); // latest first
+    });
+
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      itemCount: results.length,
+      itemCount: sortedResults.length,
       itemBuilder: (context, index) {
-        final result = results[index];
+        final result = sortedResults[index];
 
         return GestureDetector(
           onTap: () {
@@ -47,6 +60,7 @@ class StudentResultList extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Student Name
                         Text(
                           result.student,
                           style: const TextStyle(
@@ -55,6 +69,8 @@ class StudentResultList extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 4),
+
+                        // Roll No
                         Text(
                           "Roll No: ${result.rollNo}",
                           style: TextStyle(
@@ -62,15 +78,40 @@ class StudentResultList extends StatelessWidget {
                             color: Colors.grey.shade600,
                           ),
                         ),
+                        const SizedBox(height: 4),
+
+                        // Total Marks
                         Text(
                           result.subjects.isNotEmpty
-                              ? "Test: ${result.subjects[0].name} | Marks: ${result.subjects[0].marks}"
+                              ? "Total Marks: ${result.total}"
                               : "No subjects",
                           style: TextStyle(
                             fontSize: 13,
                             color: Colors.grey.shade500,
                           ),
                         ),
+                        const SizedBox(height: 2),
+
+                        // Rank & Percentile
+                        Text(
+                          "Rank: ${result.rank} • Percentile: ${result.percentile}",
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.grey.shade500,
+                          ),
+                        ),
+
+                        // Date
+                        if (result.date != null) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            "Date: ${result.date!.split('T').first}",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),

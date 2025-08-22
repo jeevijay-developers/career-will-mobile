@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:careerwill/models/kit.dart';
 import 'package:careerwill/models/parent.dart';
+import 'package:careerwill/screens/auth/login/teacher_login.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:careerwill/models/student.dart';
@@ -22,8 +23,52 @@ class _ParentViewState extends State<ParentView> {
   @override
   void initState() {
     super.initState();
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final loggedInUser = userProvider.getLoginUsr();
     final homeProvider = Provider.of<HomeProvider>(context, listen: false);
-    _fetchFuture = homeProvider.fetchAllStudents();
+
+    if (loggedInUser != null && loggedInUser.students.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          _fetchFuture = Future.wait(
+            loggedInUser.students.map(
+              (id) => homeProvider.fetchStudentById(id),
+            ),
+          );
+        });
+      });
+    } else {
+      _fetchFuture = Future.value();
+    }
+  }
+
+  void _confirmLogout(BuildContext context, UserProvider userProvider) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text("Logout Confirmation"),
+        content: const Text("Are you sure you want to logout?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              await userProvider.logout();
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (_) => const LoginPage()),
+                (_) => false,
+              );
+            },
+            child: const Text("Logout"),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -38,13 +83,14 @@ class _ParentViewState extends State<ParentView> {
         if (snapshot.connectionState != ConnectionState.done) {
           return const Center(child: CircularProgressIndicator());
         }
+
         log("logged in user ---> $loggedInUser");
 
+        // Fake student for test-id login
         if (loggedInUser != null && loggedInUser.id == "test-id") {
           final fakeStudent = Student(
             id: "fake-student-1",
             name: "John Doe",
-            address: "123 Test Street, Test City",
             phone: "9999999999",
             imageUrl: ImageModel(publicId: "", url: ""),
             kit: [
@@ -85,12 +131,7 @@ class _ParentViewState extends State<ParentView> {
           );
         }
 
-        final studentIds = loggedInUser.students
-            .map((e) => e.toString())
-            .toSet();
-        final studentList = homeProvider.allStudents
-            .where((student) => studentIds.contains(student.id.toString()))
-            .toList();
+        final studentList = homeProvider.parentStudents;
 
         if (studentList.isEmpty) {
           return const Center(
@@ -155,8 +196,8 @@ class _ParentViewState extends State<ParentView> {
               const SizedBox(height: 12),
               Text("Roll No: ${student.rollNo}"),
               Text("Phone: ${student.phone}"),
-              Text("Address: ${student.address}"),
-              Text("Father Name: ${student.parent!.fatherName}"),
+              Text("Address: ${student.city}, ${student.state}"),
+              Text("Father Name: ${student.parent?.fatherName ?? ''}"),
               const SizedBox(height: 12),
               const Text(
                 "Kit Items:",

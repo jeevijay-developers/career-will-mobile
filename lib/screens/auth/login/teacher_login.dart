@@ -36,93 +36,96 @@ class _LoginPageState extends State<LoginPage> {
               height: MediaQuery.of(context).size.height,
               width: double.infinity,
               padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Center(
-                      child: Image.asset(
-                        'assets/images/logo.png', // replace with your asset path
-                        height: 100,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
+              child: Center(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
 
-                    const Text(
-                      "Welcome to Career Will",
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                    const SizedBox(height: 40),
-
-                    MyTextField(
-                      hintText: "Email",
-                      controller: emailController,
-                      inputType: TextInputType.emailAddress,
-                    ),
-                    const SizedBox(height: 20),
-
-                    MyTextField(
-                      hintText: "Password",
-                      controller: passwordController,
-                      obscureText: true,
-                      inputType: TextInputType.visiblePassword,
-                    ),
-                    const SizedBox(height: 20),
-
-                    userProvider.isLoading
-                        ? const CircularProgressIndicator()
-                        : MyButton(
-                            text: "Login",
-                            onPressed: () async {
-                              bool success = await userProvider.login(
-                                email: emailController.text.trim(),
-                                password: passwordController.text.trim(),
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    userProvider.message ?? "Error",
-                                  ),
-                                ),
-                              );
-                              if (success) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const HomeScreen(),
-                                  ),
-                                );
-                              }
-                            },
-                          ),
-                    const SizedBox(height: 10),
-
-                    Center(
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ParentLogin(),
-                            ),
-                          );
-                        },
-                        child: const Text(
-                          "Login as Parent",
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          textAlign: TextAlign.center,
+                    children: [
+                      Center(
+                        child: Image.asset(
+                          'assets/images/logo.png', // replace with your asset path
+                          height: 100,
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+
+                      const Text(
+                        "Welcome to CW NEET Offline",
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(height: 40),
+
+                      MyTextField(
+                        hintText: "Email",
+                        controller: emailController,
+                        inputType: TextInputType.emailAddress,
+                      ),
+                      const SizedBox(height: 20),
+
+                      MyTextField(
+                        hintText: "Password",
+                        controller: passwordController,
+                        obscureText: true,
+                        inputType: TextInputType.visiblePassword,
+                      ),
+                      const SizedBox(height: 20),
+
+                      userProvider.isLoading
+                          ? const CircularProgressIndicator()
+                          : MyButton(
+                              text: "Login",
+                              onPressed: () async {
+                                bool success = await userProvider.login(
+                                  email: emailController.text.trim(),
+                                  password: passwordController.text.trim(),
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      userProvider.message ?? "Error",
+                                    ),
+                                  ),
+                                );
+                                if (success) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const HomeScreen(),
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                      const SizedBox(height: 10),
+
+                      Center(
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ParentLogin(),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            "Login as Parent",
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

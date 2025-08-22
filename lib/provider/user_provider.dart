@@ -64,12 +64,13 @@ class UserProvider extends ChangeNotifier {
   }
 
   User? getLoginUsr() {
-    Map<String, dynamic>? userJson = box.read(USER_INFO_BOX);
-    return User.fromJson(userJson!);
+    final userJson = box.read(USER_INFO_BOX);
+    if (userJson == null) return null;
+    return User.fromJson(Map<String, dynamic>.from(userJson));
   }
 
   Future<void> logout() async {
-    await box.erase();
+    await box.remove(USER_INFO_BOX);
     _message = null;
     _isLoading = false;
     notifyListeners();

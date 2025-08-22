@@ -34,6 +34,22 @@ class Result {
       date: json["date"],
     );
   }
+
+  @override
+  String toString() {
+    return 'Result('
+        'id: $id, '
+        'student: $student, '
+        'father: $father, '
+        'batch: $batch, '
+        'rollNo: $rollNo, '
+        'percentile: $percentile, '
+        'total: $total, '
+        'rank: $rank, '
+        'date: $date, '
+        'subjects: $subjects'
+        ')';
+  }
 }
 
 class Subjects {
@@ -44,5 +60,10 @@ class Subjects {
 
   factory Subjects.fromJson(Map<String, dynamic> json) {
     return Subjects(name: json["name"], marks: json["marks"]);
+  }
+
+  @override
+  String toString() {
+    return 'Subjects(name: $name, marks: $marks)';
   }
 }

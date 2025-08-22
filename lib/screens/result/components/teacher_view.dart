@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:careerwill/provider/home_provider.dart';
 import 'package:careerwill/screens/home/component/search_bar.dart';
 
-class TeacherViewResult extends StatelessWidget {
+class TeacherViewResult extends StatefulWidget {
   final TextEditingController searchController;
   final String? selectedStudentName;
   final Function(String) onSearchChanged;
@@ -20,10 +20,24 @@ class TeacherViewResult extends StatelessWidget {
   });
 
   @override
+  State<TeacherViewResult> createState() => _TeacherViewResultState();
+}
+
+class _TeacherViewResultState extends State<TeacherViewResult> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+      homeProvider.clearSearchResult(); // runs safely after first build
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<HomeProvider>(
       builder: (context, homeProvider, _) {
-        log("Filtered results count: ${homeProvider.filteredResults.length}");
+        log("Filtered results count: ${homeProvider.filteredResults}");
         return Column(
           children: [
             Text(
@@ -34,7 +48,10 @@ class TeacherViewResult extends StatelessWidget {
                 color: Colors.indigo,
               ),
             ),
-            SearchBar(controller: searchController, onChanged: onSearchChanged),
+            SearchBar(
+              controller: widget.searchController,
+              onChanged: widget.onSearchChanged,
+            ),
 
             if (homeProvider.isLoading)
               const Padding(
