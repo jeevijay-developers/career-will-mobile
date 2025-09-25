@@ -42,7 +42,7 @@ dependencies:
   intl: ^0.20.2
   table_calendar: ^3.2.0
   flutter_launcher_icons: ^0.14.4
-
+  fl_chart: ^0.69.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

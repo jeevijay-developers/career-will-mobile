@@ -135,6 +135,13 @@ class _ParentLoginState extends State<ParentLogin> {
                               });
                             } else if (userProvider.message ==
                                 "There is no student associated with this mobile number") {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    "There is no student associated with this mobile number",
+                                  ),
+                                ),
+                              );
                               setState(() {
                                 isLoading = false;
                               });
