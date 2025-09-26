@@ -387,7 +387,7 @@ class _PerformanceGraph extends StatelessWidget {
               getTitlesWidget: (value, meta) {
                 if (value.toInt() < subjects.length) {
                   return RotatedBox(
-                    quarterTurns: 1,
+                    quarterTurns: 0,
                     child: Text(
                       subjects[value.toInt()],
                       style: TextStyle(
@@ -451,7 +451,7 @@ class _RankComparisonGraph extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final labels = ["Student", "1st Rank"];
+    final labels = ["Your Marks", "1st Rank"];
     final values = [studentMarks, firstRankMarks];
 
     return BarChart(
