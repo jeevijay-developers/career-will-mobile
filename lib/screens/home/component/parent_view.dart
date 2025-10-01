@@ -84,7 +84,11 @@ class _ParentViewState extends State<ParentView> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        log("logged in user ---> $loggedInUser");
+        // Only log in debug mode to improve performance
+        assert(() {
+          log("logged in user ---> $loggedInUser");
+          return true;
+        }());
 
         // Fake student for test-id login
         if (loggedInUser != null && loggedInUser.id == "test-id") {

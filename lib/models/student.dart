@@ -43,25 +43,25 @@ class Student {
   });
 
   factory Student.fromJson(Map<String, dynamic> json) {
+    // Cache commonly accessed values to avoid repeated lookups
+    final imageData = json['image'];
+    final kitData = json['kit'] as List?;
+    final parentData = json['parent'];
+    final rollNoData = json['rollNo'];
+
     return Student(
       id: json["_id"]?.toString() ?? "",
       name: json['name'] ?? '',
       phone: json['phone'] ?? '',
-      imageUrl: json['image'] != null
-          ? ImageModel.fromJson(json['image'])
+      imageUrl: imageData != null
+          ? ImageModel.fromJson(imageData)
           : ImageModel(publicId: '', url: ''),
-      kit:
-          (json['kit'] as List?)
-              ?.map((item) => KitItem.fromJson(item))
-              .toList() ??
-          [],
+      kit: kitData?.map((item) => KitItem.fromJson(item)).toList() ?? [],
       feeId: json['fee'],
-      rollNo: json['rollNo'] is int
-          ? json['rollNo']
-          : int.tryParse(json['rollNo'].toString()) ?? 0,
-      parent: json['parent'] != null
-          ? ParentModel.fromJson(json['parent'])
-          : null,
+      rollNo: rollNoData is int
+          ? rollNoData
+          : int.tryParse(rollNoData?.toString() ?? '') ?? 0,
+      parent: parentData != null ? ParentModel.fromJson(parentData) : null,
       previousSchoolName: json['previousSchoolName'] ?? '',
       medium: json['medium'] ?? '',
       category: json['category'] ?? '',

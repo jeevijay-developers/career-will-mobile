@@ -23,11 +23,23 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   late int _selectedMonth;
   late int _selectedYear;
 
+  // Cache frequently used data
+  List<int>? _yearsList;
+  List<DropdownMenuItem<int>>? _monthItems;
+
   @override
   void initState() {
     super.initState();
     _selectedMonth = _focusedDay.month;
     _selectedYear = _focusedDay.year;
+
+    // Initialize cached month items
+    _monthItems = List.generate(12, (index) {
+      return DropdownMenuItem(
+        value: index + 1,
+        child: Text(DateFormat.MMMM().format(DateTime(0, index + 1))),
+      );
+    });
   }
 
   @override
@@ -180,22 +192,27 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   }
 
   Widget _buildSelectedDayDetails(List<Attendance> list, DateTime selectedDay) {
-    final record = list.firstWhere(
-      (att) => DateUtils.dateOnly(att.date) == DateUtils.dateOnly(selectedDay),
-      orElse: () => Attendance(
-        id: '',
-        rollNo: '',
-        name: '',
-        inTime: 'N/A',
-        outTime: 'N/A',
-        lateArrival: 'N/A',
-        earlyDeparture: 'N/A',
-        workingHours: 'N/A',
-        otDuration: 'N/A',
-        presentStatus: 'Absent',
-        date: selectedDay,
-      ),
-    );
+    // Use firstWhereOrNull for better performance than firstWhere with orElse
+    final record =
+        list.cast<Attendance?>().firstWhere(
+          (att) =>
+              att != null &&
+              DateUtils.dateOnly(att.date) == DateUtils.dateOnly(selectedDay),
+          orElse: () => null,
+        ) ??
+        Attendance(
+          id: '',
+          rollNo: '',
+          name: '',
+          inTime: 'N/A',
+          outTime: 'N/A',
+          lateArrival: 'N/A',
+          earlyDeparture: 'N/A',
+          workingHours: 'N/A',
+          otDuration: 'N/A',
+          presentStatus: 'Absent',
+          date: selectedDay,
+        );
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -257,10 +274,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   }
 
   Widget _buildMonthYearSelector() {
-    List<int> years = List.generate(
-      DateTime.now().year - 2023 + 1,
-      (index) => 2023 + index,
-    );
+    // Cache the years list to avoid regenerating on every build
+    if (_yearsList == null) {
+      _yearsList = List.generate(
+        DateTime.now().year - 2023 + 1,
+        (index) => 2023 + index,
+      );
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -270,12 +290,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             child: DropdownButtonFormField<int>(
               value: _selectedMonth,
               decoration: _dropdownDecoration("Month"),
-              items: List.generate(12, (index) {
-                return DropdownMenuItem(
-                  value: index + 1,
-                  child: Text(DateFormat.MMMM().format(DateTime(0, index + 1))),
-                );
-              }),
+              items: _monthItems,
               onChanged: (value) {
                 final newDate = DateTime(_selectedYear, value!);
                 if (newDate.isAfter(DateTime.now())) {
@@ -294,7 +309,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             child: DropdownButtonFormField<int>(
               value: _selectedYear,
               decoration: _dropdownDecoration("Year"),
-              items: years
+              items: _yearsList!
                   .map(
                     (year) =>
                         DropdownMenuItem(value: year, child: Text('$year')),

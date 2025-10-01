@@ -33,6 +33,14 @@ class _MyTextFieldState extends State<MyTextField> {
   }
 
   @override
+  void didUpdateWidget(MyTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.obscureText != widget.obscureText) {
+      _isObscured = widget.obscureText;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return TextField(
       controller: widget.controller,

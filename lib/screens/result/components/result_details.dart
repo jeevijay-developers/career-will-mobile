@@ -18,12 +18,38 @@ class StudentResultDetailScreen extends StatefulWidget {
 }
 
 class _StudentResultDetailScreenState extends State<StudentResultDetailScreen> {
+  // Cache the subject max values to avoid repeated calculations
+  late final Map<String, int> _subjectMaxCache = {};
+
+  // Cache the first rank marks calculation
+  late final double _firstRankMarks = _calculateFirstRankMarks();
+
   // Returns the maximum marks for the given subject name.
   int _subjectMax(String subjectName) {
-    final key = subjectName.toLowerCase();
-    if (key.contains('physics') || key.contains('chem')) return 180;
-    if (key.contains('biology') || key.contains('bio')) return 360;
-    return 100; // default
+    return _subjectMaxCache.putIfAbsent(subjectName, () {
+      final key = subjectName.toLowerCase();
+      if (key.contains('physics') || key.contains('chem')) return 180;
+      if (key.contains('biology') || key.contains('bio')) return 360;
+      return 100; // default
+    });
+  }
+
+  double _calculateFirstRankMarks() {
+    final double studentMarks = widget.result.total.toDouble();
+    double p = widget.result.percentile.toDouble();
+
+    // Handle percentile as fraction (0..1) or percent (0..100)
+    if (p <= 1.0) {
+      p = p * 100.0;
+    }
+
+    // Safety: clamp and avoid division by zero
+    if (p <= 0) return studentMarks;
+    p = p.clamp(0.0001, 100.0);
+
+    const double topPercent = 100.0; // assume 1st rank got full %
+    final estimated = (studentMarks * topPercent) / p;
+    return estimated.isFinite ? estimated : studentMarks;
   }
 
   @override
@@ -33,24 +59,8 @@ class _StudentResultDetailScreenState extends State<StudentResultDetailScreen> {
       return input[0].toUpperCase() + input.substring(1).toLowerCase();
     }
 
-    // ✅ Robust calculation of 1st Rank Marks
-    double firstRankMarks = (() {
-      final double studentMarks = widget.result.total.toDouble();
-      double p = widget.result.percentile.toDouble();
-
-      // Handle percentile as fraction (0..1) or percent (0..100)
-      if (p <= 1.0) {
-        p = p * 100.0;
-      }
-
-      // Safety: clamp and avoid division by zero
-      if (p <= 0) return studentMarks;
-      p = p.clamp(0.0001, 100.0);
-
-      const double topPercent = 100.0; // assume 1st rank got full %
-      final estimated = (studentMarks * topPercent) / p;
-      return estimated.isFinite ? estimated : studentMarks;
-    })();
+    // ✅ Use cached first rank marks calculation
+    final firstRankMarks = _firstRankMarks;
 
     return DefaultTabController(
       length: 2,

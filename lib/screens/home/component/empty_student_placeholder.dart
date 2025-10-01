@@ -5,16 +5,20 @@ class EmptyStudentPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Opacity(
+    return const Opacity(
       opacity: 0.6,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
+        children: [
           Icon(Icons.school_outlined, size: 80, color: Colors.indigo),
           SizedBox(height: 16),
           Text(
             "Start typing to search students",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.indigo),
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+              color: Colors.indigo,
+            ),
           ),
         ],
       ),

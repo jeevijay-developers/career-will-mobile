@@ -29,14 +29,22 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onSearchChanged(String query) {
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce?.cancel();
 
-    _debounce = Timer(const Duration(milliseconds: 500), () {
-      setState(() {
-        selectedStudentName = query;
-      });
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      if (mounted) {
+        setState(() {
+          selectedStudentName = query;
+        });
 
-      Provider.of<HomeProvider>(context, listen: false).searchStudent(query);
+        final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+
+        if (query.trim().isEmpty) {
+          homeProvider.clearSearchResult();
+        } else {
+          homeProvider.searchStudent(query);
+        }
+      }
     });
   }
 
