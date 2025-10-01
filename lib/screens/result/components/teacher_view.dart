@@ -41,7 +41,7 @@ class _TeacherViewResultState extends State<TeacherViewResult> {
         return Column(
           children: [
             Text(
-              "Search Student result",
+              "Search Student Result",
               style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 20,

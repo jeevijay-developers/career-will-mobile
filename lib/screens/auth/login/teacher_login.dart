@@ -51,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 20),
 
                       const Text(
-                        "Welcome to CW NEET Offline",
+                        "Welcome to CareerWill NEET Offline",
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,

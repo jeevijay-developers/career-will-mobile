@@ -2,7 +2,7 @@ class Result {
   final String id, student, father, batch;
   final int rollNo, total, rank;
   final List<Subjects> subjects;
-  final String? date;
+  final String? date, name;
   final num percentile;
 
   Result({
@@ -16,11 +16,13 @@ class Result {
     required this.rank,
     required this.subjects,
     this.date,
+    this.name,
   });
 
   factory Result.fromJson(Map<String, dynamic> json) {
     return Result(
       id: json["_id"],
+      name: json["name"] ?? "Unknown",
       student: json["student"],
       father: json["father"],
       batch: json["batch"],
@@ -47,7 +49,8 @@ class Result {
         'total: $total, '
         'rank: $rank, '
         'date: $date, '
-        'subjects: $subjects'
+        'subjects: $subjects,'
+        'name: $name'
         ')';
   }
 }

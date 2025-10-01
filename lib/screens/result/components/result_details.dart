@@ -33,9 +33,24 @@ class _StudentResultDetailScreenState extends State<StudentResultDetailScreen> {
       return input[0].toUpperCase() + input.substring(1).toLowerCase();
     }
 
-    // ✅ Calculate 1st Rank Marks (approximation)
-    double firstRankMarks =
-        widget.result.total / widget.result.percentile * 100;
+    // ✅ Robust calculation of 1st Rank Marks
+    double firstRankMarks = (() {
+      final double studentMarks = widget.result.total.toDouble();
+      double p = widget.result.percentile.toDouble();
+
+      // Handle percentile as fraction (0..1) or percent (0..100)
+      if (p <= 1.0) {
+        p = p * 100.0;
+      }
+
+      // Safety: clamp and avoid division by zero
+      if (p <= 0) return studentMarks;
+      p = p.clamp(0.0001, 100.0);
+
+      const double topPercent = 100.0; // assume 1st rank got full %
+      final estimated = (studentMarks * topPercent) / p;
+      return estimated.isFinite ? estimated : studentMarks;
+    })();
 
     return DefaultTabController(
       length: 2,
@@ -221,13 +236,13 @@ class _StudentResultDetailScreenState extends State<StudentResultDetailScreen> {
                               ),
                             ),
                             const SizedBox(width: 8),
-                            Text(
-                              '${widget.result.total}',
-                              style: TextStyle(
-                                color: _cwAccent,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
+                            // Text(
+                            //   '${widget.result.total}',
+                            //   style: TextStyle(
+                            //     color: _cwAccent,
+                            //     fontWeight: FontWeight.w700,
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),
@@ -251,13 +266,6 @@ class _StudentResultDetailScreenState extends State<StudentResultDetailScreen> {
                               ),
                             ),
                             const SizedBox(width: 8),
-                            Text(
-                              firstRankMarks.toStringAsFixed(0),
-                              style: TextStyle(
-                                color: _cwGold,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
                           ],
                         ),
                       ),
@@ -271,10 +279,10 @@ class _StudentResultDetailScreenState extends State<StudentResultDetailScreen> {
                     "📈 Percentile",
                     "${widget.result.percentile.toStringAsFixed(2)}%",
                   ),
-                  _highlightTile(
-                    "🥇 1st Rank Marks",
-                    firstRankMarks.toStringAsFixed(0),
-                  ),
+                  // _highlightTile(
+                  //   "🥇 1st Rank Marks",
+                  //   firstRankMarks.toStringAsFixed(0),
+                  // ),
                 ],
               ),
             ],

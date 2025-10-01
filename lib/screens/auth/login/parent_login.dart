@@ -58,7 +58,7 @@ class _ParentLoginState extends State<ParentLogin> {
                   const SizedBox(height: 20),
 
                   const Text(
-                    "Welcome to CW NEET Offline",
+                    "Welcome to CareerWill NEET Offline",
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -135,7 +135,7 @@ class _ParentLoginState extends State<ParentLogin> {
                               });
                             } else if (userProvider.message ==
                                 "There is no student associated with this mobile number") {
-                                  ScaffoldMessenger.of(context).showSnackBar(
+                              ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
                                     "There is no student associated with this mobile number",

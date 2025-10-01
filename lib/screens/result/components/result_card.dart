@@ -62,7 +62,7 @@ class StudentResultList extends StatelessWidget {
                       children: [
                         // Student Name
                         Text(
-                          result.student,
+                          result.name?.toUpperCase() ?? "",
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
